@@ -54,21 +54,25 @@ $userInput = [
 
 $items = [];
 $totalPrice = 0;
+$allElectronicItems = [];
 
-foreach ($userInput as $item) {
+foreach ($userInput as $index => $item) {
    $electronicItem = $item['electronic_item'];
-   $electronicItemName = $electronicItem['name'];
-   $electronicItemPrice = $electronicItem['price'];
-   $electronicItemMaxExtras = $electronicItem['max_extras'];
 
-   $itemExtras = $item['extras'];
-
-   $electronicItem = new ElectronicItem($electronicItemName, $electronicItemPrice, $electronicItemMaxExtras, $itemExtras);
+   $electronicItem = new ElectronicItem($electronicItem['name'], $electronicItem['price'], $electronicItem['max_extras'], $item['extras']);
    $items[] = $electronicItem;
 
    $totalPrice += $electronicItem->totalPriceWithExtras();
 
-   printResult($electronicItemName, $electronicItemPrice, $itemExtras);
+   $allElectronicItems[$electronicItem->totalPriceWithExtras()] = $item;
+}
+
+// Sort the results by price 
+ksort($allElectronicItems);
+foreach ($allElectronicItems as $item) {
+   $electronicItem = $item['electronic_item'];
+
+   printResult($electronicItem['name'], $electronicItem['price'], $item['extras']);
 }
 
 function printResult($electronicItemName, $electronicItemPrice, $itemExtras)
